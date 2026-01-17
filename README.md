@@ -29,7 +29,8 @@ yarn ios --device
 
 ## Apple Health Integration
 
-The app will request permission to write Mindfulness sessions to Apple Health. This allows you to:
+The app will request permission to write Mindfulness sessions to Apple Health.
+This allows you to:
 
 - Track your meditation practice over time
 - See meditation data in the Health app
@@ -44,12 +45,13 @@ The app uses a remote meditation bell sound. To use your own:
 1. Add your `gong.mp3` to the `assets/` folder
 2. Update `lib/audio.ts` to use the local file:
    ```ts
-   gongPlayer = createAudioPlayer(require('../assets/gong.mp3'));
+   gongPlayer = createAudioPlayer(require("../assets/gong.mp3"));
    ```
 
 ### App Icons
 
 Add your app icons to the `assets/` folder:
+
 - `icon.png` - 1024x1024 app icon
 - `splash-icon.png` - splash screen icon
 - `adaptive-icon.png` - Android adaptive icon
@@ -72,3 +74,5 @@ npx eas build --platform ios
 - expo-audio for audio playback
 - react-native-health for Apple Health
 - TypeScript for type safety
+
+Sound Effect by [Alexander Jauk](https://pixabay.com/users/alex_jauk-16800354/) from [Pixabay](https://pixabay.com/)

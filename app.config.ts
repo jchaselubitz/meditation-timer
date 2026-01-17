@@ -17,6 +17,7 @@ export default ({ config }: ConfigContext) => ({
       backgroundColor: "#0F2744",
     },
     ios: {
+     icon: "./assets/images/1024x1024.png",
       supportsTablet: false,
       bundleIdentifier: "com.chill.timer",
       infoPlist: {
