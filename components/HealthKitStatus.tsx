@@ -41,33 +41,51 @@ export function HealthKitStatus({
     </>
   );
 
-  if (useGlass && !isConnected) {
-    return (
-      <TouchableOpacity onPress={onConnect} style={styles.touchable}>
-        <GlassView
-          glassEffectStyle="regular"
-          tintColor={Colors.surfaceLight}
-          style={styles.glassContainer}
+  return (
+    <View style={styles.cardContainer}>
+      <Text style={styles.label}>Apple Health</Text>
+      {useGlass && !isConnected ? (
+        <TouchableOpacity onPress={onConnect} style={styles.touchable}>
+          <GlassView
+            glassEffectStyle="regular"
+            tintColor={Colors.surfaceLight}
+            style={styles.glassContainer}
+          >
+            {buttonContent}
+          </GlassView>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={!isConnected ? onConnect : undefined}
+          disabled={isConnected}
         >
           {buttonContent}
-        </GlassView>
-      </TouchableOpacity>
-    );
-  }
-
-  return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={!isConnected ? onConnect : undefined}
-      disabled={isConnected}
-    >
-      {buttonContent}
-    </TouchableOpacity>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  cardContainer: {
+    padding: Spacing.lg,
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceLight,
+  },
+  label: {
+    color: Colors.textMuted,
+    fontSize: FontSizes.xs,
+    textAlign: "center",
+    marginBottom: Spacing.md,
+    textTransform: "uppercase",
+    letterSpacing: 2,
+  },
+  buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

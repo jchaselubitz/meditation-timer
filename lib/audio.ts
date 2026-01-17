@@ -1,12 +1,12 @@
+import { Asset } from "expo-asset";
 import { AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 
 let gongPlayer: AudioPlayer | null = null;
 let soundLoaded = false;
 
-// Meditation bell sound URI - using a royalty-free sound
+// Meditation bell sound module - using a royalty-free sound
 // You can replace this with your own gong.mp3 in the assets folder
-const GONG_SOUND_URI =
-  "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
+const GONG_SOUND_MODULE = require("../assets/sounds/zen-gong.mp3");
 
 export async function loadGongSound(): Promise<void> {
   if (soundLoaded) return;
@@ -18,8 +18,12 @@ export async function loadGongSound(): Promise<void> {
       allowsRecording: false,
     });
 
+    // Convert require() result to URI using Asset.fromModule
+    const asset = Asset.fromModule(GONG_SOUND_MODULE);
+    await asset.downloadAsync();
+
     // Create audio player with URI source
-    gongPlayer = createAudioPlayer({ uri: GONG_SOUND_URI });
+    gongPlayer = createAudioPlayer({ uri: asset.localUri || asset.uri });
     soundLoaded = true;
   } catch (error) {
     console.log("Error loading gong sound:", error);

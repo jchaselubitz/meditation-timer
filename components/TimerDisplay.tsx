@@ -9,16 +9,18 @@ interface TimerDisplayProps {
   time: string;
   timerState: TimerState;
   isOvertime: boolean;
+  progress: number; // 0-1, proportion of time elapsed
 }
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const TIMER_SIZE = SCREEN_WIDTH * 0.75;
-const TICK_COUNT = 12;
+const TICK_COUNT = 60; // Full circle with tick marks
 
 export function TimerDisplay({
   time,
   timerState,
   isOvertime,
+  progress,
 }: TimerDisplayProps) {
   const getStatusText = () => {
     switch (timerState) {
@@ -62,22 +64,32 @@ export function TimerDisplay({
             />
           </View>
 
-          {/* Tick marks around the top */}
+          {/* Tick marks around the circle showing progress */}
           <View style={styles.ticksContainer}>
             {Array.from({ length: TICK_COUNT }).map((_, index) => {
-              const angle = -90 + (index * 180) / (TICK_COUNT - 1);
+              // Start at top (-90°) and go clockwise around the full circle
+              const angle = -90 + (index * 360) / TICK_COUNT;
               const radians = (angle * Math.PI) / 180;
               const radius = TIMER_SIZE / 2 - 20;
               const x = Math.cos(radians) * radius;
               const y = Math.sin(radians) * radius;
 
-              if (angle > 90) return null;
+              // Calculate if this tick should be active based on progress
+              // Progress goes from 0 to 1, ticks go from index 0 to TICK_COUNT-1
+              const tickProgress = index / TICK_COUNT;
+              const isActive = tickProgress < progress;
+
+              // Make every 5th tick (hour markers) slightly larger
+              const isMajorTick = index % 5 === 0;
 
               return (
                 <View
                   key={index}
                   style={[
                     styles.tick,
+                    isMajorTick && styles.majorTick,
+                    isActive && styles.tickActive,
+                    isActive && isOvertime && styles.tickOvertime,
                     {
                       transform: [
                         { translateX: x },
@@ -162,9 +174,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 3,
     height: 12,
-    backgroundColor: Colors.text,
+    backgroundColor: Colors.textDark,
     borderRadius: 2,
-    opacity: 0.9,
+    opacity: 0.4,
+  },
+  majorTick: {
+    height: 18,
+    width: 4,
+    opacity: 0.6,
+  },
+  tickActive: {
+    backgroundColor: Colors.text,
+    opacity: 0.95,
+  },
+  tickOvertime: {
+    backgroundColor: Colors.overtime,
+    opacity: 0.95,
   },
   textContainer: {
     alignItems: "center",

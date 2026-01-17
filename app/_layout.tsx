@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
 import { Colors } from "../constants";
+import { SettingsProvider } from "../contexts";
 import { loadGongSound, unloadGongSound } from "../lib/audio";
 
 export default function RootLayout() {
@@ -16,7 +17,7 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <>
+    <SettingsProvider>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -24,8 +25,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: Colors.background },
         }}
       >
-        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
       </Stack>
-    </>
+    </SettingsProvider>
   );
 }
