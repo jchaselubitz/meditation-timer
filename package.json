@@ -5,9 +5,16 @@
   "scripts": {
     "start:expo": "expo start",
     "ios": "expo run:ios",
+    "new": "npx expo start -c",
+    "clean:ios": "npx expo prebuild -p ios --clean",
+    "build:ios": "npx expo run:ios --configuration Release",
+    "build:device": "npx expo run:ios --configuration Release --device",
     "android": "expo run:android",
     "web": "expo start --web",
-    "new": "npx expo start -c"
+    "lint": "eslint . --ext .ts,.tsx",
+    "fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json}\""
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
