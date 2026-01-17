@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Colors, Gradients, FontSizes, Spacing, BorderRadius } from '../constants';
@@ -14,6 +15,7 @@ interface ActionButtonProps {
 
 export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps) {
   const isRunning = timerState === 'running' || timerState === 'overtime';
+  const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
 
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -27,6 +29,36 @@ export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps)
   const gradientColors = isRunning
     ? (Gradients.water as [string, string, string])
     : (Gradients.sunsetSimple as [string, string]);
+
+  const tintColor = isRunning ? Colors.waterLight : Colors.sunsetStart;
+
+  if (useGlass) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={handlePress}
+          activeOpacity={0.8}
+          style={styles.buttonWrapper}
+        >
+          <GlassView
+            glassEffectStyle="regular"
+            tintColor={tintColor}
+            style={styles.button}
+          >
+            <Ionicons
+              name={isRunning ? 'stop' : 'play'}
+              size={32}
+              color={Colors.text}
+              style={!isRunning && styles.playIcon}
+            />
+            <Text style={styles.buttonText}>
+              {isRunning ? 'Stop' : 'Start'}
+            </Text>
+          </GlassView>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

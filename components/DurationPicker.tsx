@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
 
@@ -12,6 +13,8 @@ interface DurationPickerProps {
 const PRESET_DURATIONS = [5, 10, 15, 20, 30, 45, 60];
 
 export function DurationPicker({ duration, onDurationChange, disabled }: DurationPickerProps) {
+  const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
+
   const increment = () => {
     if (!disabled) {
       onDurationChange(Math.min(180, duration + 1));
@@ -28,6 +31,53 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
     if (!disabled) {
       onDurationChange(preset);
     }
+  };
+
+  const renderPresetButton = (preset: number) => {
+    const isActive = duration === preset;
+
+    if (useGlass && !disabled) {
+      return (
+        <TouchableOpacity
+          key={preset}
+          onPress={() => selectPreset(preset)}
+          disabled={disabled}
+          style={styles.presetButtonTouchable}
+        >
+          <GlassView
+            glassEffectStyle="regular"
+            tintColor={isActive ? Colors.primary : Colors.surfaceLight}
+            style={styles.presetButtonGlass}
+          >
+            <Text style={[
+              styles.presetText,
+              isActive && styles.presetTextActive,
+            ]}>
+              {preset}
+            </Text>
+          </GlassView>
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        key={preset}
+        style={[
+          styles.presetButton,
+          isActive && styles.presetButtonActive,
+        ]}
+        onPress={() => selectPreset(preset)}
+        disabled={disabled}
+      >
+        <Text style={[
+          styles.presetText,
+          isActive && styles.presetTextActive,
+        ]}>
+          {preset}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -66,24 +116,7 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
       </View>
 
       <View style={styles.presets}>
-        {PRESET_DURATIONS.map((preset) => (
-          <TouchableOpacity
-            key={preset}
-            style={[
-              styles.presetButton,
-              duration === preset && styles.presetButtonActive,
-            ]}
-            onPress={() => selectPreset(preset)}
-            disabled={disabled}
-          >
-            <Text style={[
-              styles.presetText,
-              duration === preset && styles.presetTextActive,
-            ]}>
-              {preset}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {PRESET_DURATIONS.map((preset) => renderPresetButton(preset))}
       </View>
     </View>
   );
@@ -149,6 +182,14 @@ const styles = StyleSheet.create({
   presetButtonActive: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primaryLight,
+  },
+  presetButtonTouchable: {
+    borderRadius: BorderRadius.full,
+  },
+  presetButtonGlass: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
   },
   presetText: {
     color: Colors.textMuted,
