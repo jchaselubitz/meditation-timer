@@ -42,6 +42,16 @@ export default ({ config }: ConfigContext) => ({
     plugins: [
       "expo-router",
       [
+        "react-native-health",
+        {
+          healthSharePermission:
+            "This app needs access to read your health data to track meditation sessions.",
+          healthUpdatePermission:
+            "This app needs access to write mindfulness session data to Apple Health.",
+          isClinicalDataEnabled: false,
+        },
+      ],
+      [
         "expo-audio",
         {
           microphonePermission: false,

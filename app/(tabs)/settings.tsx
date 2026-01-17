@@ -27,22 +27,17 @@ export default function SettingsScreen() {
   }, []);
 
   const connectHealthKit = useCallback(async () => {
-    const connected = await initializeHealthKit();
-    setHealthKitConnected(connected);
-    if (!connected && healthKitAvailable) {
+    const result = await initializeHealthKit();
+    setHealthKitConnected(result.connected);
+    if (!result.connected) {
       Alert.alert(
-        "Health Access",
-        "Please enable Health access in Settings to track your meditation sessions.",
+        "Apple Health",
+        result.errorMessage ||
+          "Please enable Apple Health access to track your meditation sessions.",
         [{ text: "OK" }],
       );
     }
-  }, [healthKitAvailable]);
-
-  useEffect(() => {
-    if (healthKitAvailable) {
-      connectHealthKit();
-    }
-  }, [healthKitAvailable, connectHealthKit]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

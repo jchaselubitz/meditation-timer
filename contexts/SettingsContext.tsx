@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { TimerSettings } from "../types";
 
@@ -6,6 +13,8 @@ const DEFAULT_SETTINGS: TimerSettings = {
   durationMinutes: 10,
   gongVolume: 0.7,
 };
+
+const SETTINGS_STORAGE_KEY = "@meditation_timer_settings";
 
 type SettingsContextValue = {
   settings: TimerSettings;
@@ -17,6 +26,41 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load settings from storage on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(SETTINGS_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored) as TimerSettings;
+          setSettings(parsed);
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  // Save settings to storage whenever they change
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const saveSettings = async () => {
+      try {
+        await AsyncStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      } catch (error) {
+        console.error("Failed to save settings:", error);
+      }
+    };
+
+    saveSettings();
+  }, [settings, isLoaded]);
 
   const setDuration = useCallback((minutes: number) => {
     setSettings((prev) => ({
