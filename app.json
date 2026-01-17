@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Meditation Timer",
+    "slug": "meditation-timer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "meditation-timer",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F2744"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.meditation.timer",
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "This app needs access to read your health data to track meditation sessions.",
+        "NSHealthUpdateUsageDescription": "This app needs access to write mindfulness session data to Apple Health.",
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F2744"
+      },
+      "package": "com.meditation.timer"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-av",
+      "expo-haptics",
+      "expo-keep-awake",
+      "expo-linear-gradient"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
