@@ -1,8 +1,9 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { loadGongSound, unloadGongSound } from '../lib/audio';
-import { Colors } from '../constants';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+
+import { Colors } from "../constants";
+import { loadGongSound, unloadGongSound } from "../lib/audio";
 
 export default function RootLayout() {
   useEffect(() => {

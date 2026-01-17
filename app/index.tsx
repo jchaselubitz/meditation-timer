@@ -1,20 +1,35 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, SafeAreaView, Alert, ScrollView } from 'react-native';
-import { useKeepAwake } from 'expo-keep-awake';
+import { useKeepAwake } from "expo-keep-awake";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  TimerDisplay,
-  DurationPicker,
-  VolumeSlider,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
+
+import {
   ActionButton,
+  DurationPicker,
   HealthKitStatus,
-} from '../components';
-import { useTimer, useSettings } from '../hooks';
-import { initializeHealthKit, saveMindfulSession, isHealthKitAvailable } from '../lib/healthKit';
-import { Colors, Spacing } from '../constants';
+  TimerDisplay,
+  VolumeSlider,
+} from "../components";
+import { Colors, Spacing } from "../constants";
+import { useSettings, useTimer } from "../hooks";
+import {
+  initializeHealthKit,
+  isHealthKitAvailable,
+  saveMindfulSession,
+} from "../lib/healthKit";
 
 export default function MeditationScreen() {
   const [healthKitConnected, setHealthKitConnected] = useState(false);
-  const [healthKitAvailable] = useState(isHealthKitAvailable());
+  const [healthKitAvailable, setHealthKitAvailable] = useState(false);
+
+  useEffect(() => {
+    isHealthKitAvailable().then(setHealthKitAvailable);
+  }, []);
 
   const { settings, setDuration, setGongVolume } = useSettings();
   const {
@@ -34,9 +49,9 @@ export default function MeditationScreen() {
     setHealthKitConnected(connected);
     if (!connected && healthKitAvailable) {
       Alert.alert(
-        'Health Access',
-        'Please enable Health access in Settings to track your meditation sessions.',
-        [{ text: 'OK' }]
+        "Health Access",
+        "Please enable Health access in Settings to track your meditation sessions.",
+        [{ text: "OK" }],
       );
     }
   }, [healthKitAvailable]);
@@ -55,25 +70,28 @@ export default function MeditationScreen() {
     const session = stopTimer();
 
     if (healthKitConnected && session.actualDuration > 0) {
-      const saved = await saveMindfulSession(session.startTime, session.endTime);
+      const saved = await saveMindfulSession(
+        session.startTime,
+        session.endTime,
+      );
       if (saved) {
         Alert.alert(
-          'Session Complete',
+          "Session Complete",
           `Your ${formatDuration(session.actualDuration)} meditation has been saved to Apple Health.`,
-          [{ text: 'OK' }]
+          [{ text: "OK" }],
         );
       } else {
         Alert.alert(
-          'Session Complete',
+          "Session Complete",
           `You meditated for ${formatDuration(session.actualDuration)}. (Could not save to Health)`,
-          [{ text: 'OK' }]
+          [{ text: "OK" }],
         );
       }
     } else {
       Alert.alert(
-        'Session Complete',
+        "Session Complete",
         `You meditated for ${formatDuration(session.actualDuration)}.`,
-        [{ text: 'OK' }]
+        [{ text: "OK" }],
       );
     }
   };
@@ -82,15 +100,15 @@ export default function MeditationScreen() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     if (mins === 0) {
-      return `${secs} second${secs !== 1 ? 's' : ''}`;
+      return `${secs} second${secs !== 1 ? "s" : ""}`;
     }
     if (secs === 0) {
-      return `${mins} minute${mins !== 1 ? 's' : ''}`;
+      return `${mins} minute${mins !== 1 ? "s" : ""}`;
     }
-    return `${mins} minute${mins !== 1 ? 's' : ''} and ${secs} second${secs !== 1 ? 's' : ''}`;
+    return `${mins} minute${mins !== 1 ? "s" : ""} and ${secs} second${secs !== 1 ? "s" : ""}`;
   };
 
-  const isTimerActive = timerState !== 'idle';
+  const isTimerActive = timerState !== "idle";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,7 +119,11 @@ export default function MeditationScreen() {
       >
         <View style={styles.content}>
           <TimerDisplay
-            time={timerState === 'idle' ? formatMinutes(settings.durationMinutes) : formattedTime}
+            time={
+              timerState === "idle"
+                ? formatMinutes(settings.durationMinutes)
+                : formattedTime
+            }
             timerState={timerState}
             isOvertime={isOvertime}
           />
@@ -136,7 +158,7 @@ export default function MeditationScreen() {
 }
 
 function formatMinutes(minutes: number): string {
-  return `${minutes.toString().padStart(2, '0')}:00`;
+  return `${minutes.toString().padStart(2, "0")}:00`;
 }
 
 const styles = StyleSheet.create({

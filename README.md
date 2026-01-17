@@ -44,10 +44,7 @@ The app uses a remote meditation bell sound. To use your own:
 1. Add your `gong.mp3` to the `assets/` folder
 2. Update `lib/audio.ts` to use the local file:
    ```ts
-   const { sound } = await Audio.Sound.createAsync(
-     require('../assets/gong.mp3'),
-     { shouldPlay: false }
-   );
+   gongPlayer = createAudioPlayer(require('../assets/gong.mp3'));
    ```
 
 ### App Icons
@@ -72,6 +69,6 @@ npx eas build --platform ios
 
 - React Native with Expo SDK 54
 - Expo Router for navigation
-- expo-av for audio playback
+- expo-audio for audio playback
 - react-native-health for Apple Health
 - TypeScript for type safety

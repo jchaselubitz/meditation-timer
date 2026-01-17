@@ -1,8 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
+import { Ionicons } from "@expo/vector-icons";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import React from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import { BorderRadius, Colors, FontSizes, Spacing } from "../constants";
 
 interface DurationPickerProps {
   duration: number;
@@ -12,8 +19,12 @@ interface DurationPickerProps {
 
 const PRESET_DURATIONS = [5, 10, 15, 20, 30, 45, 60];
 
-export function DurationPicker({ duration, onDurationChange, disabled }: DurationPickerProps) {
-  const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
+export function DurationPicker({
+  duration,
+  onDurationChange,
+  disabled,
+}: DurationPickerProps) {
+  const useGlass = Platform.OS === "ios" && isLiquidGlassAvailable();
 
   const increment = () => {
     if (!disabled) {
@@ -49,10 +60,9 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
             tintColor={isActive ? Colors.primary : Colors.surfaceLight}
             style={styles.presetButtonGlass}
           >
-            <Text style={[
-              styles.presetText,
-              isActive && styles.presetTextActive,
-            ]}>
+            <Text
+              style={[styles.presetText, isActive && styles.presetTextActive]}
+            >
               {preset}
             </Text>
           </GlassView>
@@ -63,17 +73,11 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
     return (
       <TouchableOpacity
         key={preset}
-        style={[
-          styles.presetButton,
-          isActive && styles.presetButtonActive,
-        ]}
+        style={[styles.presetButton, isActive && styles.presetButtonActive]}
         onPress={() => selectPreset(preset)}
         disabled={disabled}
       >
-        <Text style={[
-          styles.presetText,
-          isActive && styles.presetTextActive,
-        ]}>
+        <Text style={[styles.presetText, isActive && styles.presetTextActive]}>
           {preset}
         </Text>
       </TouchableOpacity>
@@ -137,37 +141,37 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.textMuted,
     fontSize: FontSizes.xs,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: Spacing.md,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 2,
   },
   mainControl: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.lg,
   },
   button: {
     padding: Spacing.sm,
   },
   durationDisplay: {
-    alignItems: 'center',
+    alignItems: "center",
     minWidth: 80,
   },
   durationText: {
     color: Colors.text,
     fontSize: FontSizes.xxl,
-    fontWeight: '300',
+    fontWeight: "300",
   },
   unitText: {
     color: Colors.textMuted,
     fontSize: FontSizes.sm,
   },
   presets: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "wrap",
     gap: Spacing.sm,
     marginTop: Spacing.lg,
   },
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.surfaceLight,
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: "transparent",
   },
   presetButtonActive: {
     backgroundColor: Colors.primary,
@@ -197,6 +201,6 @@ const styles = StyleSheet.create({
   },
   presetTextActive: {
     color: Colors.text,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

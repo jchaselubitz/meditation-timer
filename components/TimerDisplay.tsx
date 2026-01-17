@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Gradients, FontSizes, Spacing } from '../constants';
-import { TimerState } from '../types';
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+
+import { Colors, FontSizes, Gradients, Spacing } from "../constants";
+import { TimerState } from "../types";
 
 interface TimerDisplayProps {
   time: string;
@@ -10,29 +11,33 @@ interface TimerDisplayProps {
   isOvertime: boolean;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 const TIMER_SIZE = SCREEN_WIDTH * 0.75;
 const TICK_COUNT = 12;
 
-export function TimerDisplay({ time, timerState, isOvertime }: TimerDisplayProps) {
+export function TimerDisplay({
+  time,
+  timerState,
+  isOvertime,
+}: TimerDisplayProps) {
   const getStatusText = () => {
     switch (timerState) {
-      case 'idle':
-        return 'Ready to meditate';
-      case 'running':
-        return 'Time remaining';
-      case 'overtime':
-        return 'Overtime';
+      case "idle":
+        return "Ready to meditate";
+      case "running":
+        return "Time remaining";
+      case "overtime":
+        return "Overtime";
       default:
-        return '';
+        return "";
     }
   };
 
   const gradientColors = isOvertime
     ? (Gradients.timerOvertime as [string, string])
-    : timerState === 'running'
-    ? (Gradients.timerActive as [string, string])
-    : (Gradients.sunsetSimple as [string, string]);
+    : timerState === "running"
+      ? (Gradients.timerActive as [string, string])
+      : (Gradients.sunsetSimple as [string, string]);
 
   return (
     <View style={styles.container}>
@@ -104,17 +109,17 @@ export function TimerDisplay({ time, timerState, isOvertime }: TimerDisplayProps
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: Spacing.xl,
   },
   timerWrapper: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
   glow: {
-    position: 'absolute',
+    position: "absolute",
     width: TIMER_SIZE + 20,
     height: TIMER_SIZE + 20,
     borderRadius: (TIMER_SIZE + 20) / 2,
@@ -129,17 +134,17 @@ const styles = StyleSheet.create({
     width: TIMER_SIZE,
     height: TIMER_SIZE,
     borderRadius: TIMER_SIZE / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   waveContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: TIMER_SIZE * 0.45,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   wave: {
     flex: 1,
@@ -147,14 +152,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: TIMER_SIZE * 0.5,
   },
   ticksContainer: {
-    position: 'absolute',
+    position: "absolute",
     width: TIMER_SIZE,
     height: TIMER_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   tick: {
-    position: 'absolute',
+    position: "absolute",
     width: 3,
     height: 12,
     backgroundColor: Colors.text,
@@ -162,24 +167,24 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   textContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     zIndex: 10,
   },
   statusText: {
     color: Colors.text,
     fontSize: FontSizes.xs,
     marginBottom: Spacing.xs,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 2,
     opacity: 0.8,
   },
   timerText: {
     color: Colors.text,
     fontSize: FontSizes.timer,
-    fontWeight: '200',
-    fontVariant: ['tabular-nums'],
-    textShadowColor: 'rgba(0,0,0,0.3)',
+    fontWeight: "200",
+    fontVariant: ["tabular-nums"],
+    textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },

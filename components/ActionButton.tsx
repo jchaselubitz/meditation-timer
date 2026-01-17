@@ -1,11 +1,24 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
-import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { Colors, Gradients, FontSizes, Spacing, BorderRadius } from '../constants';
-import { TimerState } from '../types';
+import { Ionicons } from "@expo/vector-icons";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import {
+  BorderRadius,
+  Colors,
+  FontSizes,
+  Gradients,
+  Spacing,
+} from "../constants";
+import { TimerState } from "../types";
 
 interface ActionButtonProps {
   timerState: TimerState;
@@ -13,9 +26,13 @@ interface ActionButtonProps {
   onStop: () => void;
 }
 
-export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps) {
-  const isRunning = timerState === 'running' || timerState === 'overtime';
-  const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
+export function ActionButton({
+  timerState,
+  onStart,
+  onStop,
+}: ActionButtonProps) {
+  const isRunning = timerState === "running" || timerState === "overtime";
+  const useGlass = Platform.OS === "ios" && isLiquidGlassAvailable();
 
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -46,13 +63,13 @@ export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps)
             style={styles.button}
           >
             <Ionicons
-              name={isRunning ? 'stop' : 'play'}
+              name={isRunning ? "stop" : "play"}
               size={32}
               color={Colors.text}
               style={!isRunning && styles.playIcon}
             />
             <Text style={styles.buttonText}>
-              {isRunning ? 'Stop' : 'Start'}
+              {isRunning ? "Stop" : "Start"}
             </Text>
           </GlassView>
         </TouchableOpacity>
@@ -74,14 +91,12 @@ export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps)
           style={styles.button}
         >
           <Ionicons
-            name={isRunning ? 'stop' : 'play'}
+            name={isRunning ? "stop" : "play"}
             size={32}
             color={Colors.text}
             style={!isRunning && styles.playIcon}
           />
-          <Text style={styles.buttonText}>
-            {isRunning ? 'Stop' : 'Start'}
-          </Text>
+          <Text style={styles.buttonText}>{isRunning ? "Stop" : "Start"}</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
@@ -90,7 +105,7 @@ export function ActionButton({ timerState, onStart, onStop }: ActionButtonProps)
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: Spacing.xl,
     marginBottom: Spacing.xxl,
   },
@@ -103,9 +118,9 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: Spacing.lg,
     paddingHorizontal: Spacing.xxl + Spacing.md,
     borderRadius: BorderRadius.full,
@@ -118,7 +133,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.text,
     fontSize: FontSizes.lg,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 1,
   },
 });

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const MeditationSessionSchema = z.object({
   startTime: z.date(),
@@ -16,4 +16,4 @@ export const TimerSettingsSchema = z.object({
 
 export type TimerSettings = z.infer<typeof TimerSettingsSchema>;
 
-export type TimerState = 'idle' | 'running' | 'overtime' | 'paused';
+export type TimerState = "idle" | "running" | "overtime" | "paused";

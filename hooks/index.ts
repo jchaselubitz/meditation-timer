@@ -1,2 +1,2 @@
-export * from './useTimer';
-export * from './useSettings';
+export * from "./useSettings";
+export * from "./useTimer";

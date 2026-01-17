@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
-import { previewGong } from '../lib/audio';
+import { Ionicons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+
+import { BorderRadius, Colors, FontSizes, Spacing } from "../constants";
+import { previewGong } from "../lib/audio";
 
 interface VolumeSliderProps {
   volume: number;
@@ -11,7 +12,11 @@ interface VolumeSliderProps {
   disabled?: boolean;
 }
 
-export function VolumeSlider({ volume, onVolumeChange, disabled }: VolumeSliderProps) {
+export function VolumeSlider({
+  volume,
+  onVolumeChange,
+  disabled,
+}: VolumeSliderProps) {
   const handleSlidingComplete = async (value: number) => {
     onVolumeChange(value);
     if (value > 0) {
@@ -24,11 +29,7 @@ export function VolumeSlider({ volume, onVolumeChange, disabled }: VolumeSliderP
       <Text style={styles.label}>Gong Volume</Text>
 
       <View style={styles.sliderContainer}>
-        <Ionicons
-          name="volume-low"
-          size={24}
-          color={Colors.textDark}
-        />
+        <Ionicons name="volume-low" size={24} color={Colors.textDark} />
         <Slider
           style={styles.slider}
           minimumValue={0}
@@ -41,16 +42,10 @@ export function VolumeSlider({ volume, onVolumeChange, disabled }: VolumeSliderP
           thumbTintColor={Colors.sunsetEnd}
           disabled={disabled}
         />
-        <Ionicons
-          name="volume-high"
-          size={24}
-          color={Colors.textDark}
-        />
+        <Ionicons name="volume-high" size={24} color={Colors.textDark} />
       </View>
 
-      <Text style={styles.volumeText}>
-        {Math.round(volume * 100)}%
-      </Text>
+      <Text style={styles.volumeText}>{Math.round(volume * 100)}%</Text>
     </View>
   );
 }
@@ -71,14 +66,14 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.textMuted,
     fontSize: FontSizes.xs,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: Spacing.md,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 2,
   },
   sliderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: Spacing.sm,
   },
   slider: {
@@ -88,8 +83,8 @@ const styles = StyleSheet.create({
   volumeText: {
     color: Colors.accent,
     fontSize: FontSizes.sm,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: Spacing.xs,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

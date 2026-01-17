@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
-import { TimerSettings } from '../types';
+import { useCallback, useState } from "react";
+
+import { TimerSettings } from "../types";
 
 const DEFAULT_SETTINGS: TimerSettings = {
   durationMinutes: 10,

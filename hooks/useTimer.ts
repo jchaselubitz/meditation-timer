@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { TimerState } from '../types';
-import { playGong } from '../lib/audio';
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { playGong } from "../lib/audio";
+import { TimerState } from "../types";
 
 interface UseTimerReturn {
   timerState: TimerState;
@@ -15,7 +16,7 @@ interface UseTimerReturn {
 }
 
 export function useTimer(): UseTimerReturn {
-  const [timerState, setTimerState] = useState<TimerState>('idle');
+  const [timerState, setTimerState] = useState<TimerState>("idle");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [targetSeconds, setTargetSeconds] = useState(0);
   const [overtimeSeconds, setOvertimeSeconds] = useState(0);
@@ -32,38 +33,41 @@ export function useTimer(): UseTimerReturn {
     }
   }, []);
 
-  const startTimer = useCallback((durationMinutes: number, gongVolume: number) => {
-    const target = durationMinutes * 60;
-    setTargetSeconds(target);
-    setElapsedSeconds(0);
-    setOvertimeSeconds(0);
-    setTimerState('running');
-    startTimeRef.current = new Date();
-    gongPlayedRef.current = false;
-    gongVolumeRef.current = gongVolume;
+  const startTimer = useCallback(
+    (durationMinutes: number, gongVolume: number) => {
+      const target = durationMinutes * 60;
+      setTargetSeconds(target);
+      setElapsedSeconds(0);
+      setOvertimeSeconds(0);
+      setTimerState("running");
+      startTimeRef.current = new Date();
+      gongPlayedRef.current = false;
+      gongVolumeRef.current = gongVolume;
 
-    clearTimerInterval();
+      clearTimerInterval();
 
-    intervalRef.current = setInterval(() => {
-      setElapsedSeconds((prev) => {
-        const newElapsed = prev + 1;
+      intervalRef.current = setInterval(() => {
+        setElapsedSeconds((prev) => {
+          const newElapsed = prev + 1;
 
-        // Check if we've reached the target
-        if (newElapsed >= target && !gongPlayedRef.current) {
-          gongPlayedRef.current = true;
-          playGong(gongVolumeRef.current);
-          setTimerState('overtime');
-        }
+          // Check if we've reached the target
+          if (newElapsed >= target && !gongPlayedRef.current) {
+            gongPlayedRef.current = true;
+            playGong(gongVolumeRef.current);
+            setTimerState("overtime");
+          }
 
-        // Calculate overtime
-        if (newElapsed > target) {
-          setOvertimeSeconds(newElapsed - target);
-        }
+          // Calculate overtime
+          if (newElapsed > target) {
+            setOvertimeSeconds(newElapsed - target);
+          }
 
-        return newElapsed;
-      });
-    }, 1000);
-  }, [clearTimerInterval]);
+          return newElapsed;
+        });
+      }, 1000);
+    },
+    [clearTimerInterval],
+  );
 
   const stopTimer = useCallback(() => {
     clearTimerInterval();
@@ -71,7 +75,7 @@ export function useTimer(): UseTimerReturn {
     const startTime = startTimeRef.current || new Date();
     const actualDuration = elapsedSeconds;
 
-    setTimerState('idle');
+    setTimerState("idle");
 
     return {
       startTime,
@@ -82,7 +86,7 @@ export function useTimer(): UseTimerReturn {
 
   const resetTimer = useCallback(() => {
     clearTimerInterval();
-    setTimerState('idle');
+    setTimerState("idle");
     setElapsedSeconds(0);
     setOvertimeSeconds(0);
     setTargetSeconds(0);
@@ -94,12 +98,17 @@ export function useTimer(): UseTimerReturn {
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const formattedTime = timerState === 'overtime'
-    ? formatTime(overtimeSeconds)
-    : formatTime(timerState === 'idle' ? targetSeconds : Math.max(0, targetSeconds - elapsedSeconds));
+  const formattedTime =
+    timerState === "overtime"
+      ? formatTime(overtimeSeconds)
+      : formatTime(
+          timerState === "idle"
+            ? targetSeconds
+            : Math.max(0, targetSeconds - elapsedSeconds),
+        );
 
   // Cleanup on unmount
   useEffect(() => {
@@ -116,7 +125,7 @@ export function useTimer(): UseTimerReturn {
     stopTimer,
     resetTimer,
     formattedTime,
-    isOvertime: timerState === 'overtime',
+    isOvertime: timerState === "overtime",
     overtimeSeconds,
   };
 }

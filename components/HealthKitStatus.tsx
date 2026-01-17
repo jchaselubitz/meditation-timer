@@ -1,8 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
+import { Ionicons } from "@expo/vector-icons";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import React from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import { BorderRadius, Colors, FontSizes, Spacing } from "../constants";
 
 interface HealthKitStatusProps {
   isConnected: boolean;
@@ -10,8 +17,12 @@ interface HealthKitStatusProps {
   onConnect: () => void;
 }
 
-export function HealthKitStatus({ isConnected, isAvailable, onConnect }: HealthKitStatusProps) {
-  const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
+export function HealthKitStatus({
+  isConnected,
+  isAvailable,
+  onConnect,
+}: HealthKitStatusProps) {
+  const useGlass = Platform.OS === "ios" && isLiquidGlassAvailable();
 
   if (!isAvailable) {
     return null;
@@ -20,22 +31,19 @@ export function HealthKitStatus({ isConnected, isAvailable, onConnect }: HealthK
   const buttonContent = (
     <>
       <Ionicons
-        name={isConnected ? 'heart' : 'heart-outline'}
+        name={isConnected ? "heart" : "heart-outline"}
         size={18}
         color={isConnected ? Colors.sunsetStart : Colors.textDark}
       />
       <Text style={[styles.text, isConnected && styles.connectedText]}>
-        {isConnected ? 'Apple Health connected' : 'Tap to connect Apple Health'}
+        {isConnected ? "Apple Health connected" : "Tap to connect Apple Health"}
       </Text>
     </>
   );
 
   if (useGlass && !isConnected) {
     return (
-      <TouchableOpacity
-        onPress={onConnect}
-        style={styles.touchable}
-      >
+      <TouchableOpacity onPress={onConnect} style={styles.touchable}>
         <GlassView
           glassEffectStyle="regular"
           tintColor={Colors.surfaceLight}
@@ -60,21 +68,21 @@ export function HealthKitStatus({ isConnected, isAvailable, onConnect }: HealthK
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.sm,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
   },
   touchable: {
-    alignSelf: 'center',
+    alignSelf: "center",
     borderRadius: BorderRadius.full,
   },
   glassContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.sm,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
