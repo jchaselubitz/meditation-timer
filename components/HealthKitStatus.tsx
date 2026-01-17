@@ -22,8 +22,8 @@ export function HealthKitStatus({ isConnected, isAvailable, onConnect }: HealthK
     >
       <Ionicons
         name={isConnected ? 'heart' : 'heart-outline'}
-        size={20}
-        color={isConnected ? Colors.primary : Colors.textMuted}
+        size={18}
+        color={isConnected ? Colors.sunsetStart : Colors.textDark}
       />
       <Text style={[styles.text, isConnected && styles.connectedText]}>
         {isConnected ? 'Apple Health connected' : 'Tap to connect Apple Health'}
@@ -40,13 +40,12 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
-    marginTop: Spacing.md,
   },
   text: {
-    color: Colors.textMuted,
+    color: Colors.textDark,
     fontSize: FontSizes.sm,
   },
   connectedText: {
-    color: Colors.text,
+    color: Colors.textMuted,
   },
 });

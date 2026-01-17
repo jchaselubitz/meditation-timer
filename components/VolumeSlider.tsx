@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSizes, Spacing } from '../constants';
+import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
 import { previewGong } from '../lib/audio';
 
 interface VolumeSliderProps {
@@ -27,7 +27,7 @@ export function VolumeSlider({ volume, onVolumeChange, disabled }: VolumeSliderP
         <Ionicons
           name="volume-low"
           size={24}
-          color={Colors.textMuted}
+          color={Colors.textDark}
         />
         <Slider
           style={styles.slider}
@@ -36,15 +36,15 @@ export function VolumeSlider({ volume, onVolumeChange, disabled }: VolumeSliderP
           value={volume}
           onValueChange={onVolumeChange}
           onSlidingComplete={handleSlidingComplete}
-          minimumTrackTintColor={Colors.primary}
-          maximumTrackTintColor={Colors.secondary}
-          thumbTintColor={Colors.text}
+          minimumTrackTintColor={Colors.accent}
+          maximumTrackTintColor={Colors.surfaceLight}
+          thumbTintColor={Colors.sunsetEnd}
           disabled={disabled}
         />
         <Ionicons
           name="volume-high"
           size={24}
-          color={Colors.textMuted}
+          color={Colors.textDark}
         />
       </View>
 
@@ -59,20 +59,22 @@ const styles = StyleSheet.create({
   container: {
     padding: Spacing.lg,
     backgroundColor: Colors.surface,
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceLight,
   },
   disabled: {
     opacity: 0.5,
   },
   label: {
     color: Colors.textMuted,
-    fontSize: FontSizes.sm,
+    fontSize: FontSizes.xs,
     textAlign: 'center',
     marginBottom: Spacing.md,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 2,
   },
   sliderContainer: {
     flexDirection: 'row',
@@ -84,9 +86,10 @@ const styles = StyleSheet.create({
     height: 40,
   },
   volumeText: {
-    color: Colors.textMuted,
+    color: Colors.accent,
     fontSize: FontSizes.sm,
     textAlign: 'center',
     marginTop: Spacing.xs,
+    fontWeight: '500',
   },
 });

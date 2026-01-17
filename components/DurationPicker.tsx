@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSizes, Spacing } from '../constants';
+import { Colors, FontSizes, Spacing, BorderRadius } from '../constants';
 
 interface DurationPickerProps {
   duration: number;
@@ -40,7 +40,11 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
           style={styles.button}
           disabled={disabled}
         >
-          <Ionicons name="remove-circle-outline" size={44} color={disabled ? Colors.textMuted : Colors.text} />
+          <Ionicons
+            name="remove-circle"
+            size={44}
+            color={disabled ? Colors.textDark : Colors.waterLight}
+          />
         </TouchableOpacity>
 
         <View style={styles.durationDisplay}>
@@ -53,7 +57,11 @@ export function DurationPicker({ duration, onDurationChange, disabled }: Duratio
           style={styles.button}
           disabled={disabled}
         >
-          <Ionicons name="add-circle-outline" size={44} color={disabled ? Colors.textMuted : Colors.text} />
+          <Ionicons
+            name="add-circle"
+            size={44}
+            color={disabled ? Colors.textDark : Colors.waterLight}
+          />
         </TouchableOpacity>
       </View>
 
@@ -85,19 +93,21 @@ const styles = StyleSheet.create({
   container: {
     padding: Spacing.lg,
     backgroundColor: Colors.surface,
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
     marginHorizontal: Spacing.lg,
+    borderWidth: 1,
+    borderColor: Colors.surfaceLight,
   },
   disabled: {
     opacity: 0.5,
   },
   label: {
     color: Colors.textMuted,
-    fontSize: FontSizes.sm,
+    fontSize: FontSizes.xs,
     textAlign: 'center',
     marginBottom: Spacing.md,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 2,
   },
   mainControl: {
     flexDirection: 'row',
@@ -131,11 +141,14 @@ const styles = StyleSheet.create({
   presetButton: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
-    borderRadius: 20,
-    backgroundColor: Colors.secondary,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.surfaceLight,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   presetButtonActive: {
     backgroundColor: Colors.primary,
+    borderColor: Colors.primaryLight,
   },
   presetText: {
     color: Colors.textMuted,
