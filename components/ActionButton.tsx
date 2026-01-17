@@ -68,9 +68,9 @@ export function ActionButton({
               color={Colors.text}
               style={!isRunning && styles.playIcon}
             />
-            <Text style={styles.buttonText}>
+            {/* <Text style={styles.buttonText}>
               {isRunning ? "Stop" : "Start"}
-            </Text>
+            </Text> */}
           </GlassView>
         </TouchableOpacity>
       </View>
@@ -122,10 +122,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.xxl + Spacing.md,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     gap: Spacing.sm,
-    minWidth: 180,
   },
   playIcon: {
     marginLeft: 4,

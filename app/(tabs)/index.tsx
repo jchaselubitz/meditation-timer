@@ -12,7 +12,7 @@ import { ActionButton, TimerDisplay } from "../../components";
 import { Colors, Spacing } from "../../constants";
 import { useSettings } from "../../contexts";
 import { useTimer } from "../../hooks";
-import { saveMindfulSession } from "../../lib/healthKit";
+import { isHealthKitAvailable, saveMindfulSession } from "../../lib/healthKit";
 
 export default function MeditationScreen() {
   const { settings } = useSettings();
@@ -35,8 +35,8 @@ export default function MeditationScreen() {
 
   const handleStop = async () => {
     const session = stopTimer();
-
-    if (healthKitConnected && session.actualDuration > 0) {
+    const healthKitAvailable = await isHealthKitAvailable();
+    if (healthKitAvailable && session.actualDuration > 0) {
       const saved = await saveMindfulSession(
         session.startTime,
         session.endTime,

@@ -9,7 +9,7 @@ export default ({ config }: ConfigContext) => ({
     orientation: "portrait",
     icon: "./assets/images/1024x1024.png",
     scheme: "chill-timer",
-    userInterfaceStyle: "dark",
+    userInterfaceStyle: "automatic",
     newArchEnabled: true,
     splash: {
       image: "./assets/images/1024x1024.png",
@@ -17,8 +17,8 @@ export default ({ config }: ConfigContext) => ({
       backgroundColor: "#0F2744",
     },
     ios: {
-     icon: "./assets/images/1024x1024.png",
-      supportsTablet: false,
+      icon: "./assets/images/1024x1024.png",
+      supportsTablet: true,
       bundleIdentifier: "com.chill.timer",
       infoPlist: {
         NSHealthShareUsageDescription:

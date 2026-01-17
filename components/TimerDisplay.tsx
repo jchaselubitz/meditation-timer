@@ -149,6 +149,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+    // iOS shadow
+    shadowColor: "#FF6B4A",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    // Android elevation
+    elevation: 12,
   },
   waveContainer: {
     position: "absolute",

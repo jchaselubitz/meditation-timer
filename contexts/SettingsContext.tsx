@@ -53,7 +53,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const saveSettings = async () => {
       try {
-        await AsyncStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+        await AsyncStorage.setItem(
+          SETTINGS_STORAGE_KEY,
+          JSON.stringify(settings),
+        );
       } catch (error) {
         console.error("Failed to save settings:", error);
       }

@@ -6,7 +6,7 @@ let soundLoaded = false;
 
 // Meditation bell sound module - using a royalty-free sound
 // You can replace this with your own gong.mp3 in the assets folder
-const GONG_SOUND_MODULE = require("../assets/sounds/zen-gong.mp3");
+import GONG_SOUND_MODULE from "../assets/sounds/zen-gong.mp3";
 
 export async function loadGongSound(): Promise<void> {
   if (soundLoaded) return;

@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/1024x1024.png",
     "scheme": "meditation-timer",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/1024x1024.png",
@@ -16,7 +16,7 @@
     "ios": {
       "icon": "./assets/images/1024x1024.png",
       "supportsTablet": false,
-      "bundleIdentifier": "com.meditation.timer",
+      "bundleIdentifier": "com.chilltimer.app",
       "infoPlist": {
         "NSHealthShareUsageDescription": "This app needs access to read your health data to track meditation sessions.",
         "NSHealthUpdateUsageDescription": "This app needs access to write mindfulness session data to Apple Health.",

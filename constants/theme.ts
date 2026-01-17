@@ -16,9 +16,12 @@ export const Colors = {
   waterDark: "#1A3A5C", // Darkest blue
 
   // App colors derived from brand
-  background: "#0F2744", // Deep night blue (darker than water)
-  surface: "#1A3A5C", // Water dark blue
-  surfaceLight: "#2E5A88", // Water deep blue
+  // background: "#0F2744", // Deep night blue (darker than water)
+  // surface: "#1A3A5C", // Water dark blue
+  // surfaceLight: "#2E5A88", // Water deep blue
+  background: "#151515", // Deep dark gray
+  surface: "#2A2A2A", // Dark gray
+  surfaceLight: "#404040", // Medium gray
 
   primary: "#FF6B4A", // Main coral/orange
   primaryLight: "#FF8C42", // Lighter orange
