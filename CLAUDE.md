@@ -52,10 +52,13 @@ yarn install
 # Reset project (clear caches)
 yarn new
 ```
+
 ## Rules
- - put all types in files in the ./types folder
- - **Always** use Zod/v4
- - When adding packages, **always** check to see if it is depricated and if you are using the latest version.
+
+- put all types in files in the ./types folder
+- **Always** use Zod/v4
+- When adding packages, **always** check to see if it is depricated and if you
+  are using the latest version.
 
 ## Development Notes
 
@@ -67,6 +70,8 @@ yarn new
 - Database models extend WatermelonDB's `Model` class with decorators
 - Use `useDatabase()` hook from `@nozbe/watermelondb/react` for queries
 - Static model methods (e.g., `Lesson.addLesson()`) handle write operations
+- Use `react-native-safe-area-context` for safe area insets
+- A `require()` style import is forbidden (use `import` instead)
 
 ## API Response Formats
 
@@ -76,11 +81,13 @@ Key models and their relationships:
 
 ## MCP Servers
 
-This project includes MCP (Model Context Protocol) server configuration in `.mcp.json`:
+This project includes MCP (Model Context Protocol) server configuration in
+`.mcp.json`:
 
-- **DeepWiki** - Provides documentation lookup for libraries and frameworks used in this project. Use it to look up Expo, React Native, WatermelonDB, and other dependency documentation.
+- **DeepWiki** - Provides documentation lookup for libraries and frameworks used
+  in this project. Use it to look up Expo, React Native, WatermelonDB, and other
+  dependency documentation.
 
 ## Skills
 
 Project-specific patterns and learnings are documented in `.claude/skills/`:
-

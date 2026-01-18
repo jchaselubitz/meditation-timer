@@ -24,9 +24,9 @@ export function HealthKitStatus({
 }: HealthKitStatusProps) {
   const useGlass = Platform.OS === "ios" && isLiquidGlassAvailable();
 
-  if (!isAvailable) {
-    return null;
-  }
+  // if (!isAvailable) {
+  //   return null;
+  // }
 
   const buttonContent = (
     <>

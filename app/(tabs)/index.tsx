@@ -1,12 +1,7 @@
 import { useKeepAwake } from "expo-keep-awake";
 import React from "react";
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ActionButton, TimerDisplay } from "../../components";
 import { Colors, Spacing } from "../../constants";
@@ -34,9 +29,10 @@ export default function MeditationScreen() {
   };
 
   const handleStop = async () => {
+    const currentElapsedSeconds = elapsedSeconds;
     const session = stopTimer();
     const healthKitAvailable = await isHealthKitAvailable();
-    if (healthKitAvailable && session.actualDuration > 0) {
+    if (healthKitAvailable && currentElapsedSeconds > 59) {
       const saved = await saveMindfulSession(
         session.startTime,
         session.endTime,

@@ -7,7 +7,7 @@
     "icon": "./assets/images/1024x1024.png",
     "scheme": "meditation-timer",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/1024x1024.png",
       "resizeMode": "contain",
@@ -15,8 +15,8 @@
     },
     "ios": {
       "icon": "./assets/images/1024x1024.png",
-      "supportsTablet": false,
-      "bundleIdentifier": "com.chilltimer.app",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chill.timer",
       "infoPlist": {
         "NSHealthShareUsageDescription": "This app needs access to read your health data to track meditation sessions.",
         "NSHealthUpdateUsageDescription": "This app needs access to write mindfulness session data to Apple Health.",
@@ -28,7 +28,7 @@
         "foregroundImage": "./assets/images/1024x1024.png",
         "backgroundColor": "#0F2744"
       },
-      "package": "com.meditation.timer"
+      "package": "com.chill.timer"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +36,11 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      ["@kingstinct/react-native-healthkit", {
+        "healthSharePermission": "This app needs access to read your health data to track meditation sessions.",
+        "healthUpdatePermission": "This app needs access to write mindfulness session data to Apple Health.",
+        "isClinicalDataEnabled": false
+      }],
       "expo-router",
       [
         "expo-audio",

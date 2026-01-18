@@ -20,6 +20,9 @@ export default ({ config }: ConfigContext) => ({
       icon: "./assets/images/1024x1024.png",
       supportsTablet: true,
       bundleIdentifier: "com.chill.timer",
+      entitlements: {
+        "com.apple.developer.healthkit": true,
+      },
       infoPlist: {
         NSHealthShareUsageDescription:
           "This app needs access to read your health data to track meditation sessions.",
@@ -43,13 +46,12 @@ export default ({ config }: ConfigContext) => ({
     plugins: [
       "expo-router",
       [
-        "react-native-health",
+        "@kingstinct/react-native-healthkit",
         {
-          healthSharePermission:
+          NSHealthShareUsageDescription:
             "This app needs access to read your health data to track meditation sessions.",
-          healthUpdatePermission:
+          NSHealthUpdateUsageDescription:
             "This app needs access to write mindfulness session data to Apple Health.",
-          isClinicalDataEnabled: false,
         },
       ],
       [

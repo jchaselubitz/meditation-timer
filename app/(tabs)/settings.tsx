@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   DurationPicker,
@@ -23,7 +17,7 @@ export default function SettingsScreen() {
   const { settings, setDuration, setGongVolume } = useSettings();
 
   useEffect(() => {
-    isHealthKitAvailable().then(setHealthKitAvailable);
+    setHealthKitAvailable(isHealthKitAvailable());
   }, []);
 
   const connectHealthKit = useCallback(async () => {

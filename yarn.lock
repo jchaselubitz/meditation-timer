@@ -2008,6 +2008,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kingstinct/react-native-healthkit@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@kingstinct/react-native-healthkit@npm:13.1.0"
+  peerDependencies:
+    react: ">=19"
+    react-native: ">=0.79"
+    react-native-nitro-modules: ">=0.30"
+  checksum: 10c0/5e7ff29f20bb973375e8a25ddfd4dc60351c9261f5ad7bf735bec1b182c7832df1c2b4c377c4e7dade7b47a4ed2652f63a4295325b40415bc7452f0f8c4fb8ca
+  languageName: node
+  linkType: hard
+
 "@napi-rs/wasm-runtime@npm:^0.2.11":
   version: 0.2.12
   resolution: "@napi-rs/wasm-runtime@npm:0.2.12"
@@ -6876,6 +6887,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.5"
     "@expo/vector-icons": "npm:^15.0.3"
+    "@kingstinct/react-native-healthkit": "npm:^13.1.0"
     "@react-native-async-storage/async-storage": "npm:^2.2.0"
     "@react-native-community/slider": "npm:5.0.1"
     "@types/react": "npm:~19.1.0"
@@ -6903,7 +6915,8 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:~2.28.0"
-    react-native-health: "npm:^1.18.0"
+    react-native-health: "npm:^1.19.0"
+    react-native-nitro-modules: "npm:^0.33.2"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"
     react-native-screens: "npm:~4.16.0"
@@ -8086,7 +8099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-health@npm:^1.18.0":
+"react-native-health@npm:^1.19.0":
   version: 1.19.0
   resolution: "react-native-health@npm:1.19.0"
   dependencies:
@@ -8104,6 +8117,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/87d20b900aded7d44c90afb946a7aa03c23a94ca3dd547bdddc2303b85357e4aab22567a57b19f1558d6c8be7058e3dcf34faa1e15182d1604f90974266d9a1d
+  languageName: node
+  linkType: hard
+
+"react-native-nitro-modules@npm:^0.33.2":
+  version: 0.33.2
+  resolution: "react-native-nitro-modules@npm:0.33.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/dda8b16b8cf955abcc9899e456b5397fff52d6854a9bb66747b6ac3ce1d9f82f729747db8933e0dba93d62f10ee28fb5c4b8dfb0e0fb2063d85c84d3f94a768a
   languageName: node
   linkType: hard
 
