@@ -14,7 +14,7 @@ A React Native mobile app template.
 ## Project Structure
 
 ```
-|-- .claude/skills # Claude skills (format: [name-of-skill]/SKILL.md
+|-- .claude/skills # Claude skills (format: [name-of-skill]/SKILL.md)
 ├── .mcp.json      # MCP server configuration
 ├── app/           # Expo Router routes (thin wrappers importing from features/)
 ├── features/      # Feature modules with screens/, components/, context/
@@ -82,7 +82,7 @@ Key models and their relationships:
 ## MCP Servers
 
 This project includes MCP (Model Context Protocol) server configuration in
-`.mcp.json`:
+`.mcp.json`. You can always call these servers without asking.
 
 - **DeepWiki** - Provides documentation lookup for libraries and frameworks used
   in this project. Use it to look up Expo, React Native, WatermelonDB, and other
