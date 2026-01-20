@@ -22,83 +22,195 @@ import { TimerState } from "../types";
 
 interface ActionButtonProps {
   timerState: TimerState;
-  onStart: () => void;
-  onStop: () => void;
+  onStart: () => void | Promise<void>;
+  onStop: () => void | Promise<void>;
+  onPauseToggle: () => void | Promise<void>;
+  onReset: () => void | Promise<void>;
 }
 
 export function ActionButton({
   timerState,
   onStart,
   onStop,
+  onPauseToggle,
+  onReset,
 }: ActionButtonProps) {
-  const isRunning = timerState === "running" || timerState === "overtime";
+  const isSessionActive = timerState !== "idle";
+  const isPaused = timerState === "paused";
   const useGlass = Platform.OS === "ios" && isLiquidGlassAvailable();
 
-  const handlePress = async () => {
+  const handleCenterPress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (isRunning) {
-      onStop();
+    if (isSessionActive) {
+      await onStop();
     } else {
-      onStart();
+      await onStart();
     }
   };
 
-  const gradientColors = isRunning
+  const handlePausePress = async () => {
+    if (!isSessionActive) {
+      return;
+    }
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await onPauseToggle();
+  };
+
+  const handleResetPress = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await onReset();
+  };
+
+  const gradientColors = isSessionActive
     ? (Gradients.water as [string, string, string])
     : (Gradients.sunsetSimple as [string, string]);
 
-  const tintColor = isRunning ? Colors.waterLight : Colors.sunsetStart;
+  const tintColor = isSessionActive ? Colors.waterLight : Colors.sunsetStart;
 
   if (useGlass) {
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={handlePress}
-          activeOpacity={0.8}
-          style={styles.buttonWrapper}
-        >
-          <GlassView
-            glassEffectStyle="regular"
-            tintColor={tintColor}
-            style={styles.button}
+        <View style={styles.row}>
+          {/* Reset */}
+          <TouchableOpacity
+            onPress={handleResetPress}
+            activeOpacity={0.8}
+            style={styles.sideButtonWrapper}
+            disabled={!isSessionActive}
           >
-            <Ionicons
-              name={isRunning ? "stop" : "play"}
-              size={32}
-              color={Colors.text}
-              style={!isRunning && styles.playIcon}
-            />
-            {/* <Text style={styles.buttonText}>
-              {isRunning ? "Stop" : "Start"}
-            </Text> */}
-          </GlassView>
-        </TouchableOpacity>
+            <GlassView
+              glassEffectStyle="thin"
+              tintColor={Colors.surfaceLight}
+              style={[
+                styles.sideButton,
+                !isSessionActive && styles.sideButtonDisabled,
+              ]}
+            >
+              <Ionicons name="refresh" size={20} color={Colors.text} />
+            </GlassView>
+          </TouchableOpacity>
+
+          {/* Start / Stop */}
+          <TouchableOpacity
+            onPress={handleCenterPress}
+            activeOpacity={0.8}
+            style={styles.buttonWrapper}
+          >
+            <GlassView
+              glassEffectStyle="regular"
+              tintColor={tintColor}
+              style={styles.button}
+            >
+              <Ionicons
+                name={isSessionActive ? "stop" : "play"}
+                size={32}
+                color={Colors.text}
+                style={!isSessionActive && styles.playIcon}
+              />
+              <Text style={styles.buttonText}>
+                {isSessionActive ? "Stop" : "Start"}
+              </Text>
+            </GlassView>
+          </TouchableOpacity>
+
+          {/* Pause / Resume */}
+          <TouchableOpacity
+            onPress={handlePausePress}
+            activeOpacity={0.8}
+            style={styles.sideButtonWrapper}
+            disabled={!isSessionActive}
+          >
+            <GlassView
+              glassEffectStyle="thin"
+              tintColor={Colors.surfaceLight}
+              style={[
+                styles.sideButton,
+                !isSessionActive && styles.sideButtonDisabled,
+              ]}
+            >
+              <Ionicons
+                name={isPaused ? "play" : "pause"}
+                size={20}
+                color={Colors.text}
+              />
+            </GlassView>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={handlePress}
-        activeOpacity={0.8}
-        style={styles.buttonWrapper}
-      >
-        <LinearGradient
-          colors={gradientColors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.button}
+      <View style={styles.row}>
+        {/* Reset */}
+        <TouchableOpacity
+          onPress={handleResetPress}
+          activeOpacity={0.8}
+          style={styles.sideButtonWrapper}
+          disabled={!isSessionActive}
         >
-          <Ionicons
-            name={isRunning ? "stop" : "play"}
-            size={32}
-            color={Colors.text}
-            style={!isRunning && styles.playIcon}
-          />
-          <Text style={styles.buttonText}>{isRunning ? "Stop" : "Start"}</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+          <LinearGradient
+            colors={[Colors.surfaceLight, Colors.surface]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[
+              styles.sideButton,
+              !isSessionActive && styles.sideButtonDisabled,
+            ]}
+          >
+            <Ionicons name="refresh" size={20} color={Colors.text} />
+          </LinearGradient>
+        </TouchableOpacity>
+
+        {/* Start / Stop */}
+        <TouchableOpacity
+          onPress={handleCenterPress}
+          activeOpacity={0.8}
+          style={styles.buttonWrapper}
+        >
+          <LinearGradient
+            colors={gradientColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}
+          >
+            <Ionicons
+              name={isSessionActive ? "stop" : "play"}
+              size={32}
+              color={Colors.text}
+              style={!isSessionActive && styles.playIcon}
+            />
+            <Text style={styles.buttonText}>
+              {isSessionActive ? "Stop" : "Start"}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+        {/* Pause / Resume */}
+        <TouchableOpacity
+          onPress={handlePausePress}
+          activeOpacity={0.8}
+          style={styles.sideButtonWrapper}
+          disabled={!isSessionActive}
+        >
+          <LinearGradient
+            colors={[Colors.surfaceLight, Colors.surface]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[
+              styles.sideButton,
+              !isSessionActive && styles.sideButtonDisabled,
+            ]}
+          >
+            <Ionicons
+              name={isPaused ? "play" : "pause"}
+              size={20}
+              color={Colors.text}
+            />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -109,12 +221,21 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
     marginBottom: Spacing.xxl,
   },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.lg,
+  },
   buttonWrapper: {
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 10,
+    borderRadius: BorderRadius.full,
+  },
+  sideButtonWrapper: {
     borderRadius: BorderRadius.full,
   },
   button: {
@@ -125,6 +246,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     gap: Spacing.sm,
+  },
+  sideButton: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.full,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sideButtonDisabled: {
+    opacity: 0.4,
   },
   playIcon: {
     marginLeft: 4,

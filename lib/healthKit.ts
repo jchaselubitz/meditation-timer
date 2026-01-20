@@ -2,26 +2,42 @@ import { Platform } from "react-native";
 
 import type { HealthKitInitResult } from "../types/healthKit";
 
-// Only import on iOS to avoid errors on other platforms
-let healthKit: typeof import("@kingstinct/react-native-healthkit") | null =
-  null;
+type HealthKitModule = typeof import("@kingstinct/react-native-healthkit");
 
-if (Platform.OS === "ios") {
+let healthKit: HealthKitModule | null = null;
+let didAttemptLoadHealthKit = false;
+
+async function getHealthKit(): Promise<HealthKitModule | null> {
+  if (Platform.OS !== "ios") {
+    return null;
+  }
+
+  if (healthKit) {
+    return healthKit;
+  }
+
+  if (didAttemptLoadHealthKit) {
+    return null;
+  }
+
+  didAttemptLoadHealthKit = true;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    healthKit = require("@kingstinct/react-native-healthkit");
+    healthKit = await import("@kingstinct/react-native-healthkit");
+    return healthKit;
   } catch (error) {
     console.warn("Failed to load HealthKit:", error);
+    return null;
   }
 }
 
-export function isHealthKitAvailable(): boolean {
-  if (Platform.OS !== "ios" || !healthKit) {
+export async function isHealthKitAvailable(): Promise<boolean> {
+  const hk = await getHealthKit();
+  if (Platform.OS !== "ios" || !hk) {
     return false;
   }
 
   try {
-    return healthKit.isHealthDataAvailable();
+    return hk.isHealthDataAvailable();
   } catch (error) {
     console.warn("HealthKit availability check failed:", error);
     return false;
@@ -36,7 +52,8 @@ export async function initializeHealthKit(): Promise<HealthKitInitResult> {
     };
   }
 
-  if (!healthKit) {
+  const hk = await getHealthKit();
+  if (!hk) {
     return {
       connected: false,
       errorMessage:
@@ -45,7 +62,7 @@ export async function initializeHealthKit(): Promise<HealthKitInitResult> {
   }
 
   try {
-    const isAvailable = healthKit.isHealthDataAvailable();
+    const isAvailable = hk.isHealthDataAvailable();
     if (!isAvailable) {
       return {
         connected: false,
@@ -54,7 +71,7 @@ export async function initializeHealthKit(): Promise<HealthKitInitResult> {
       };
     }
 
-    await healthKit.requestAuthorization({
+    await hk.requestAuthorization({
       toShare: ["HKCategoryTypeIdentifierMindfulSession"],
     });
 
@@ -75,12 +92,13 @@ export async function saveMindfulSession(
   startDate: Date,
   endDate: Date,
 ): Promise<boolean> {
-  if (Platform.OS !== "ios" || !healthKit) {
+  const hk = await getHealthKit();
+  if (Platform.OS !== "ios" || !hk) {
     return false;
   }
 
   try {
-    await healthKit.saveCategorySample(
+    await hk.saveCategorySample(
       "HKCategoryTypeIdentifierMindfulSession",
       0, // No specific value needed for mindful sessions
       startDate,

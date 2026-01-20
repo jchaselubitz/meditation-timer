@@ -30,6 +30,8 @@ export function TimerDisplay({
         return "Time remaining";
       case "overtime":
         return "Overtime";
+      case "paused":
+        return "Paused";
       default:
         return "";
     }

@@ -17,6 +17,9 @@ export default function MeditationScreen() {
     formattedTime,
     startTimer,
     stopTimer,
+    pauseTimer,
+    resumeTimer,
+    resetTimer,
     isOvertime,
     targetSeconds,
   } = useTimer();
@@ -59,6 +62,18 @@ export default function MeditationScreen() {
     }
   };
 
+  const handlePauseToggle = () => {
+    if (timerState === "paused") {
+      resumeTimer();
+      return;
+    }
+    pauseTimer();
+  };
+
+  const handleReset = () => {
+    resetTimer();
+  };
+
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -98,6 +113,8 @@ export default function MeditationScreen() {
             timerState={timerState}
             onStart={handleStart}
             onStop={handleStop}
+            onPauseToggle={handlePauseToggle}
+            onReset={handleReset}
           />
         </View>
       </ScrollView>

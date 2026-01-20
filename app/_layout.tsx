@@ -5,6 +5,10 @@ import { useEffect } from "react";
 import { Colors } from "../constants";
 import { SettingsProvider } from "../contexts";
 import { loadGongSound, unloadGongSound } from "../lib/audio";
+import { setupNotificationHandler } from "../lib/notificationSetup";
+
+// Configure notification handler at module level (before any component renders)
+setupNotificationHandler();
 
 export default function RootLayout() {
   useEffect(() => {

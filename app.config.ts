@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext) => ({
   expo: {
     name: "Chill Timer",
     slug: "chill-timer",
-    version: "1.0.0",
+    version: "1.0.1",
     orientation: "portrait",
     icon: "./assets/images/1024x1024.png",
     scheme: "chill-timer",
@@ -20,16 +20,6 @@ export default ({ config }: ConfigContext) => ({
       icon: "./assets/images/1024x1024.png",
       supportsTablet: true,
       bundleIdentifier: "com.chill.timer",
-      entitlements: {
-        "com.apple.developer.healthkit": true,
-      },
-      infoPlist: {
-        NSHealthShareUsageDescription:
-          "This app needs access to read your health data to track meditation sessions.",
-        NSHealthUpdateUsageDescription:
-          "This app needs access to write mindfulness session data to Apple Health.",
-        UIBackgroundModes: ["audio"],
-      },
     },
     android: {
       adaptiveIcon: {
@@ -46,12 +36,19 @@ export default ({ config }: ConfigContext) => ({
     plugins: [
       "expo-router",
       [
+        "expo-notifications",
+        {
+          sounds: ["./assets/sounds/zen-gong.wav"],
+        },
+      ],
+      [
         "@kingstinct/react-native-healthkit",
         {
           NSHealthShareUsageDescription:
-            "This app needs access to read your health data to track meditation sessions.",
+            "This app does not read your health data. It only writes mindfulness session data to Apple Health.",
           NSHealthUpdateUsageDescription:
             "This app needs access to write mindfulness session data to Apple Health.",
+          background: false,
         },
       ],
       [

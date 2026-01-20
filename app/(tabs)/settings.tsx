@@ -17,7 +17,16 @@ export default function SettingsScreen() {
   const { settings, setDuration, setGongVolume } = useSettings();
 
   useEffect(() => {
-    setHealthKitAvailable(isHealthKitAvailable());
+    let cancelled = false;
+    (async () => {
+      const available = await isHealthKitAvailable();
+      if (!cancelled) {
+        setHealthKitAvailable(available);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const connectHealthKit = useCallback(async () => {
