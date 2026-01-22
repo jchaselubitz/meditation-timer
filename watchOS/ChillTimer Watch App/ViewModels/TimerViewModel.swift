@@ -1,0 +1,237 @@
+import SwiftUI
+import WatchKit
+import Combine
+
+enum TimerState: String {
+    case idle
+    case running
+    case overtime
+    case paused
+}
+
+class TimerViewModel: ObservableObject {
+    // MARK: - Published Properties
+    @Published var timerState: TimerState = .idle
+    @Published var elapsedSeconds: Int = 0
+    @Published var targetSeconds: Int = 0
+    @Published var overtimeSeconds: Int = 0
+
+    // Settings
+    @Published var durationMinutes: Int = 10 {
+        didSet {
+            saveDuration()
+        }
+    }
+    @Published var gongVolume: Double = 0.7 {
+        didSet {
+            saveVolume()
+        }
+    }
+
+    // MARK: - Private Properties
+    private var timer: Timer?
+    private var startTime: Date?
+    private var accumulatedSeconds: Int = 0
+    private var gongPlayed: Bool = false
+
+    // UserDefaults keys
+    private let durationKey = "meditation_duration"
+    private let volumeKey = "meditation_volume"
+
+    // Preset durations
+    let presetDurations = [5, 10, 15, 20, 30, 45, 60]
+
+    // MARK: - Computed Properties
+    var formattedTime: String {
+        let seconds: Int
+        if timerState == .overtime || (timerState == .paused && elapsedSeconds >= targetSeconds) {
+            seconds = overtimeSeconds
+        } else if timerState == .idle {
+            seconds = targetSeconds
+        } else {
+            seconds = max(0, targetSeconds - elapsedSeconds)
+        }
+
+        let mins = seconds / 60
+        let secs = seconds % 60
+        return String(format: "%02d:%02d", mins, secs)
+    }
+
+    var isOvertime: Bool {
+        timerState == .overtime || (timerState == .paused && targetSeconds > 0 && elapsedSeconds >= targetSeconds)
+    }
+
+    var progress: Double {
+        guard targetSeconds > 0 else { return 0 }
+        if timerState == .idle { return 0 }
+        return min(1.0, Double(elapsedSeconds) / Double(targetSeconds))
+    }
+
+    var statusText: String {
+        switch timerState {
+        case .idle:
+            return "Ready to meditate"
+        case .running:
+            return "Time remaining"
+        case .overtime:
+            return "Overtime"
+        case .paused:
+            return "Paused"
+        }
+    }
+
+    // MARK: - Initialization
+    init() {
+        loadSettings()
+    }
+
+    // MARK: - Settings Persistence
+    private func loadSettings() {
+        let defaults = UserDefaults.standard
+        if let savedDuration = defaults.object(forKey: durationKey) as? Int {
+            durationMinutes = savedDuration
+        }
+        if let savedVolume = defaults.object(forKey: volumeKey) as? Double {
+            gongVolume = savedVolume
+        }
+    }
+
+    private func saveDuration() {
+        UserDefaults.standard.set(durationMinutes, forKey: durationKey)
+    }
+
+    private func saveVolume() {
+        UserDefaults.standard.set(gongVolume, forKey: volumeKey)
+    }
+
+    // MARK: - Timer Controls
+    func startTimer() {
+        let target = durationMinutes * 60
+        targetSeconds = target
+        elapsedSeconds = 0
+        overtimeSeconds = 0
+        timerState = .running
+        startTime = Date()
+        accumulatedSeconds = 0
+        gongPlayed = false
+
+        startInterval()
+
+        // Haptic feedback for starting
+        playHaptic(.start)
+    }
+
+    func stopTimer() {
+        stopInterval()
+
+        let totalElapsed = getTotalElapsedSeconds()
+        elapsedSeconds = totalElapsed
+
+        if totalElapsed > targetSeconds {
+            overtimeSeconds = totalElapsed - targetSeconds
+        }
+
+        timerState = .idle
+        startTime = nil
+
+        // Haptic feedback for stopping
+        playHaptic(.stop)
+    }
+
+    func pauseTimer() {
+        guard timerState == .running || timerState == .overtime else { return }
+
+        let totalElapsed = getTotalElapsedSeconds()
+        accumulatedSeconds = totalElapsed
+        elapsedSeconds = totalElapsed
+
+        if totalElapsed > targetSeconds {
+            overtimeSeconds = totalElapsed - targetSeconds
+        }
+
+        stopInterval()
+        startTime = nil
+        timerState = .paused
+
+        // Haptic feedback for pausing
+        playHaptic(.click)
+    }
+
+    func resumeTimer() {
+        guard timerState == .paused, targetSeconds > 0 else { return }
+
+        startTime = Date()
+
+        let currentElapsed = accumulatedSeconds
+
+        if currentElapsed >= targetSeconds {
+            timerState = .overtime
+        } else {
+            timerState = .running
+        }
+
+        startInterval()
+
+        // Haptic feedback for resuming
+        playHaptic(.click)
+    }
+
+    func resetTimer() {
+        stopInterval()
+        timerState = .idle
+        elapsedSeconds = 0
+        overtimeSeconds = 0
+        targetSeconds = 0
+        startTime = nil
+        accumulatedSeconds = 0
+        gongPlayed = false
+
+        // Haptic feedback for reset
+        playHaptic(.retry)
+    }
+
+    // MARK: - Private Methods
+    private func startInterval() {
+        stopInterval()
+        tick()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.tick()
+        }
+    }
+
+    private func stopInterval() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    private func tick() {
+        let totalElapsed = getTotalElapsedSeconds()
+        elapsedSeconds = totalElapsed
+
+        if totalElapsed >= targetSeconds && !gongPlayed {
+            gongPlayed = true
+            // Play notification haptic for timer completion
+            playHaptic(.notification)
+            timerState = .overtime
+        }
+
+        if totalElapsed > targetSeconds {
+            overtimeSeconds = totalElapsed - targetSeconds
+        } else {
+            overtimeSeconds = 0
+        }
+    }
+
+    private func getTotalElapsedSeconds() -> Int {
+        guard let start = startTime else {
+            return accumulatedSeconds
+        }
+
+        let runElapsed = Int(Date().timeIntervalSince(start))
+        return accumulatedSeconds + max(0, runElapsed)
+    }
+
+    private func playHaptic(_ type: WKHapticType) {
+        WKInterfaceDevice.current().play(type)
+    }
+}
