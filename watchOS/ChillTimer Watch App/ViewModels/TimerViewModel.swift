@@ -31,8 +31,10 @@ class TimerViewModel: ObservableObject {
     // MARK: - Private Properties
     private var timer: Timer?
     private var startTime: Date?
+    private var sessionStartTime: Date?  // Track when the meditation session began
     private var accumulatedSeconds: Int = 0
     private var gongPlayed: Bool = false
+    private let healthKitManager = HealthKitManager.shared
 
     // UserDefaults keys
     private let durationKey = "meditation_duration"
@@ -83,6 +85,7 @@ class TimerViewModel: ObservableObject {
     // MARK: - Initialization
     init() {
         loadSettings()
+        healthKitManager.requestAuthorization()
     }
 
     // MARK: - Settings Persistence
@@ -112,6 +115,7 @@ class TimerViewModel: ObservableObject {
         overtimeSeconds = 0
         timerState = .running
         startTime = Date()
+        sessionStartTime = Date()  // Track session start for HealthKit
         accumulatedSeconds = 0
         gongPlayed = false
 
@@ -131,8 +135,15 @@ class TimerViewModel: ObservableObject {
             overtimeSeconds = totalElapsed - targetSeconds
         }
 
+        // Save mindfulness session to HealthKit
+        if let sessionStart = sessionStartTime, totalElapsed > 0 {
+            let sessionEnd = Date()
+            healthKitManager.saveMindfulnessSession(startDate: sessionStart, endDate: sessionEnd)
+        }
+
         timerState = .idle
         startTime = nil
+        sessionStartTime = nil
 
         // Haptic feedback for stopping
         playHaptic(.stop)
@@ -183,6 +194,7 @@ class TimerViewModel: ObservableObject {
         overtimeSeconds = 0
         targetSeconds = 0
         startTime = nil
+        sessionStartTime = nil  // Don't save session on reset
         accumulatedSeconds = 0
         gongPlayed = false
 
