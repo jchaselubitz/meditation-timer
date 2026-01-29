@@ -9,105 +9,69 @@ struct TimerView: View {
     var body: some View {
         GeometryReader { geometry in
             let size = min(geometry.size.width, geometry.size.height)
-            let timerSize = size * 0.85
+            let timerSize = size * 0.95
 
             ZStack {
                 // Background
                 AppColors.background
                     .ignoresSafeArea()
 
-                VStack(spacing: 4) {
-                    // Timer Circle
-                    ZStack {
-                        // Glow effect
-                        Circle()
-                            .fill(viewModel.isOvertime ? AppColors.overtime.opacity(0.3) : AppColors.primaryMuted)
-                            .frame(width: timerSize + 8, height: timerSize + 8)
-                            .blur(radius: 4)
+                // Timer Circle - tappable for all controls
+                ZStack {
+                    // Glow effect
+                    Circle()
+                        .fill(viewModel.isOvertime ? AppColors.overtime.opacity(0.3) : AppColors.primaryMuted)
+                        .frame(width: timerSize + 8, height: timerSize + 8)
+                        .blur(radius: 4)
 
-                        // Main timer circle with gradient
-                        Circle()
-                            .fill(gradientForState)
-                            .frame(width: timerSize, height: timerSize)
-                            .overlay(
-                                // Wave overlay at bottom
-                                WaveOverlay(size: timerSize)
-                                    .clipShape(Circle())
-                            )
-
-                        // Tick marks
-                        TickMarks(
-                            count: tickCount,
-                            progress: viewModel.progress,
-                            isOvertime: viewModel.isOvertime,
-                            size: timerSize
+                    // Main timer circle with gradient
+                    Circle()
+                        .fill(gradientForState)
+                        .frame(width: timerSize, height: timerSize)
+                        .overlay(
+                            // Wave overlay at bottom
+                            WaveOverlay(size: timerSize)
+                                .clipShape(Circle())
                         )
 
-                        // Timer text
-                        VStack(spacing: 2) {
-                            Text(viewModel.statusText)
-                                .font(.system(size: 9, weight: .medium))
-                                .foregroundColor(AppColors.text.opacity(0.8))
-                                .textCase(.uppercase)
-                                .tracking(1)
+                    // Tick marks
+                    TickMarks(
+                        count: tickCount,
+                        progress: viewModel.progress,
+                        isOvertime: viewModel.isOvertime,
+                        size: timerSize
+                    )
 
-                            Text(viewModel.isOvertime ? "+\(viewModel.formattedTime)" : viewModel.formattedTime)
-                                .font(.system(size: size * 0.18, weight: .ultraLight))
-                                .foregroundColor(AppColors.text)
-                                .monospacedDigit()
-                                .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                    // Timer text and action indicator
+                    VStack(spacing: 2) {
+                        Text(viewModel.statusText)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(AppColors.text.opacity(0.8))
+                            .textCase(.uppercase)
+                            .tracking(1)
 
-                            if viewModel.isOvertime {
-                                Text("Tap to stop")
-                                    .font(.system(size: 8))
-                                    .foregroundColor(AppColors.text.opacity(0.7))
-                            }
-                        }
+                        Text(viewModel.isOvertime ? "+\(viewModel.formattedTime)" : viewModel.formattedTime)
+                            .font(.system(size: size * 0.22, weight: .ultraLight))
+                            .foregroundColor(AppColors.text)
+                            .monospacedDigit()
+                            .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+
+                        // Action icon indicator
+                        Image(systemName: actionIcon)
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(AppColors.text.opacity(0.9))
+                            .padding(.top, 4)
                     }
-                    .onTapGesture {
-                        handleTimerTap()
+                }
+                .onTapGesture {
+                    handleTimerTap()
+                }
+                .onLongPressGesture(minimumDuration: 0.5) {
+                    // Long press to reset when not idle
+                    if viewModel.timerState != .idle {
+                        WKInterfaceDevice.current().play(.click)
+                        viewModel.resetTimer()
                     }
-
-                    // Action buttons
-                    HStack(spacing: 12) {
-                        // Reset button (only when not idle)
-                        if viewModel.timerState != .idle {
-                            Button(action: { viewModel.resetTimer() }) {
-                                Image(systemName: "arrow.counterclockwise")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(AppColors.waterLight)
-                            }
-                            .buttonStyle(.plain)
-                            .frame(width: 32, height: 32)
-                            .background(AppColors.surface)
-                            .clipShape(Circle())
-                        }
-
-                        // Main action button
-                        Button(action: { handleMainAction() }) {
-                            Image(systemName: mainActionIcon)
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(AppColors.text)
-                        }
-                        .buttonStyle(.plain)
-                        .frame(width: 44, height: 44)
-                        .background(mainActionGradient)
-                        .clipShape(Circle())
-
-                        // Pause/Resume button (only when running or paused)
-                        if viewModel.timerState == .running || viewModel.timerState == .overtime || viewModel.timerState == .paused {
-                            Button(action: { handlePauseResume() }) {
-                                Image(systemName: viewModel.timerState == .paused ? "play.fill" : "pause.fill")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(AppColors.waterLight)
-                            }
-                            .buttonStyle(.plain)
-                            .frame(width: 32, height: 32)
-                            .background(AppColors.surface)
-                            .clipShape(Circle())
-                        }
-                    }
-                    .padding(.top, 4)
                 }
             }
         }
@@ -119,53 +83,39 @@ struct TimerView: View {
             return AppGradients.timerOvertime
         } else if viewModel.timerState == .running {
             return AppGradients.timerActive
+        } else if viewModel.timerState == .paused {
+            return AppGradients.sunsetSimple
         } else {
             return AppGradients.sunsetSimple
         }
     }
 
-    private var mainActionIcon: String {
+    private var actionIcon: String {
         switch viewModel.timerState {
         case .idle:
             return "play.fill"
-        case .running, .overtime:
-            return "stop.fill"
+        case .running:
+            return "pause.fill"
         case .paused:
+            return "play.fill"
+        case .overtime:
             return "stop.fill"
-        }
-    }
-
-    private var mainActionGradient: LinearGradient {
-        if viewModel.timerState == .idle {
-            return AppGradients.timerActive
-        } else {
-            return LinearGradient(colors: [AppColors.waterMid, AppColors.waterDeep], startPoint: .top, endPoint: .bottom)
         }
     }
 
     // MARK: - Actions
     private func handleTimerTap() {
-        if viewModel.timerState == .idle {
-            viewModel.startTimer()
-        } else if viewModel.isOvertime {
-            viewModel.stopTimer()
-        }
-    }
+        WKInterfaceDevice.current().play(.click)
 
-    private func handleMainAction() {
         switch viewModel.timerState {
         case .idle:
             viewModel.startTimer()
-        case .running, .overtime, .paused:
-            viewModel.stopTimer()
-        }
-    }
-
-    private func handlePauseResume() {
-        if viewModel.timerState == .paused {
-            viewModel.resumeTimer()
-        } else {
+        case .running:
             viewModel.pauseTimer()
+        case .paused:
+            viewModel.resumeTimer()
+        case .overtime:
+            viewModel.stopTimer()
         }
     }
 }
