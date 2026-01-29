@@ -82,6 +82,28 @@ struct SettingsView: View {
                 .background(AppColors.surface)
                 .cornerRadius(12)
 
+                // Haptic Only Section
+                VStack(spacing: 8) {
+                    Toggle(isOn: $viewModel.hapticOnly) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Silent Mode")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(AppColors.text)
+                            Text("Gentle vibrations only")
+                                .font(.system(size: 10))
+                                .foregroundColor(AppColors.textMuted)
+                        }
+                    }
+                    .tint(AppColors.accent)
+                    .onChange(of: viewModel.hapticOnly) { _, _ in
+                        WKInterfaceDevice.current().play(.click)
+                    }
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 8)
+                .background(AppColors.surface)
+                .cornerRadius(12)
+
                 // Info text
                 Text("Swipe right to return to timer")
                     .font(.system(size: 10))

@@ -27,6 +27,11 @@ class TimerViewModel: ObservableObject {
             saveVolume()
         }
     }
+    @Published var hapticOnly: Bool = false {
+        didSet {
+            saveHapticOnly()
+        }
+    }
 
     // MARK: - Private Properties
     private var timer: Timer?
@@ -39,6 +44,7 @@ class TimerViewModel: ObservableObject {
     // UserDefaults keys
     private let durationKey = "meditation_duration"
     private let volumeKey = "meditation_volume"
+    private let hapticOnlyKey = "meditation_haptic_only"
 
     // Preset durations
     let presetDurations = [5, 10, 15, 20, 30, 45, 60]
@@ -97,6 +103,7 @@ class TimerViewModel: ObservableObject {
         if let savedVolume = defaults.object(forKey: volumeKey) as? Double {
             gongVolume = savedVolume
         }
+        hapticOnly = defaults.bool(forKey: hapticOnlyKey)
     }
 
     private func saveDuration() {
@@ -105,6 +112,10 @@ class TimerViewModel: ObservableObject {
 
     private func saveVolume() {
         UserDefaults.standard.set(gongVolume, forKey: volumeKey)
+    }
+
+    private func saveHapticOnly() {
+        UserDefaults.standard.set(hapticOnly, forKey: hapticOnlyKey)
     }
 
     // MARK: - Timer Controls
@@ -222,8 +233,9 @@ class TimerViewModel: ObservableObject {
 
         if totalElapsed >= targetSeconds && !gongPlayed {
             gongPlayed = true
-            // Play notification haptic for timer completion
-            playHaptic(.notification)
+            // Play soothing haptic pattern for timer completion
+            // This provides a gentle awakening when in silent mode
+            playSoothingCompletionHaptic()
             timerState = .overtime
         }
 
@@ -245,5 +257,32 @@ class TimerViewModel: ObservableObject {
 
     private func playHaptic(_ type: WKHapticType) {
         WKInterfaceDevice.current().play(type)
+    }
+
+    /// Plays a soothing multi-pulse haptic pattern for meditation completion.
+    /// Creates a gentle "wave" sensation: soft pulse → pause → gentle rise → pause → soft pulse
+    /// This provides a calming awakening rather than a jarring single vibration.
+    private func playSoothingCompletionHaptic() {
+        let device = WKInterfaceDevice.current()
+
+        // First gentle pulse - soft success feeling
+        device.play(.success)
+
+        // Sequence of gentle haptics with pauses to create a wave-like pattern
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            device.play(.directionUp)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            device.play(.success)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+            device.play(.directionUp)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+            device.play(.success)
+        }
     }
 }

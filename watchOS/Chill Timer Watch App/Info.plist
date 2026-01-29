@@ -17,9 +17,13 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app does not read your health data. It only writes mindfulness session data to Apple Health.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>This app needs access to write mindfulness session data to Apple Health.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -33,9 +37,5 @@
 	<true/>
 	<key>WKWatchOnly</key>
 	<false/>
-	<key>NSHealthShareUsageDescription</key>
-	<string>This app does not read your health data. It only writes mindfulness session data to Apple Health.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>This app needs access to write mindfulness session data to Apple Health.</string>
 </dict>
 </plist>

@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext) => ({
   expo: {
     name: "Chill Timer",
     slug: "chill-timer",
-    version: "1.0.2",
+    version: "1.0.3",
     orientation: "portrait",
     icon: "./assets/images/1024x1024.png",
     scheme: "chill-timer",
