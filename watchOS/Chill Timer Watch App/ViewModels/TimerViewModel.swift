@@ -9,7 +9,7 @@ enum TimerState: String {
     case paused
 }
 
-class TimerViewModel: ObservableObject {
+class TimerViewModel: NSObject, ObservableObject, WKExtendedRuntimeSessionDelegate {
     // MARK: - Published Properties
     @Published var timerState: TimerState = .idle
     @Published var elapsedSeconds: Int = 0
@@ -40,6 +40,7 @@ class TimerViewModel: ObservableObject {
     private var accumulatedSeconds: Int = 0
     private var gongPlayed: Bool = false
     private let healthKitManager = HealthKitManager.shared
+    private var extendedRuntimeSession: WKExtendedRuntimeSession?
 
     // UserDefaults keys
     private let durationKey = "meditation_duration"
@@ -78,7 +79,7 @@ class TimerViewModel: ObservableObject {
     var statusText: String {
         switch timerState {
         case .idle:
-            return "Ready to meditate"
+            return "Meditate for \(durationMinutes) min"
         case .running:
             return "Time remaining"
         case .overtime:
@@ -89,7 +90,8 @@ class TimerViewModel: ObservableObject {
     }
 
     // MARK: - Initialization
-    init() {
+    override init() {
+        super.init()
         loadSettings()
         healthKitManager.requestAuthorization()
     }
@@ -130,6 +132,7 @@ class TimerViewModel: ObservableObject {
         accumulatedSeconds = 0
         gongPlayed = false
 
+        startExtendedRuntimeSession()
         startInterval()
 
         // Haptic feedback for starting
@@ -138,6 +141,7 @@ class TimerViewModel: ObservableObject {
 
     func stopTimer() {
         stopInterval()
+        endExtendedRuntimeSession()
 
         let totalElapsed = getTotalElapsedSeconds()
         elapsedSeconds = totalElapsed
@@ -200,6 +204,7 @@ class TimerViewModel: ObservableObject {
 
     func resetTimer() {
         stopInterval()
+        endExtendedRuntimeSession()
         timerState = .idle
         elapsedSeconds = 0
         overtimeSeconds = 0
@@ -283,6 +288,43 @@ class TimerViewModel: ObservableObject {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
             device.play(.success)
+        }
+    }
+
+    // MARK: - Extended Runtime Session
+    private func startExtendedRuntimeSession() {
+        // End any existing session before starting a new one
+        endExtendedRuntimeSession()
+
+        let session = WKExtendedRuntimeSession()
+        session.delegate = self
+        session.start()
+        extendedRuntimeSession = session
+    }
+
+    private func endExtendedRuntimeSession() {
+        guard let session = extendedRuntimeSession else { return }
+        if session.state == .running || session.state == .scheduled {
+            session.invalidate()
+        }
+        extendedRuntimeSession = nil
+    }
+
+    // MARK: - WKExtendedRuntimeSessionDelegate
+    func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: Error?) {
+        // Session was invalidated (expired or error)
+        // The timer will continue running but won't fire in background anymore
+        self.extendedRuntimeSession = nil
+    }
+
+    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
+        // Session started successfully - timer will now run in background
+    }
+
+    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
+        // Session is about to expire - play completion haptic if timer is still running
+        if timerState == .running || timerState == .overtime {
+            playSoothingCompletionHaptic()
         }
     }
 }

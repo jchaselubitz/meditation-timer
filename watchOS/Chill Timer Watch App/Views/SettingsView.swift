@@ -54,6 +54,28 @@ struct SettingsView: View {
                 .background(AppColors.surface)
                 .cornerRadius(12)
 
+                // Silent Mode Section
+                VStack(spacing: 8) {
+                    Toggle(isOn: $viewModel.hapticOnly) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Silent Mode")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(AppColors.text)
+                            Text("Gentle vibrations only")
+                                .font(.system(size: 10))
+                                .foregroundColor(AppColors.textMuted)
+                        }
+                    }
+                    .tint(AppColors.accent)
+                    .onChange(of: viewModel.hapticOnly) { _, _ in
+                        WKInterfaceDevice.current().play(.click)
+                    }
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 8)
+                .background(AppColors.surface)
+                .cornerRadius(12)
+
                 // Volume Section
                 VStack(spacing: 8) {
                     Text("GONG VOLUME")
@@ -76,28 +98,6 @@ struct SettingsView: View {
                     Text("\(Int(viewModel.gongVolume * 100))%")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(AppColors.accent)
-                }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 8)
-                .background(AppColors.surface)
-                .cornerRadius(12)
-
-                // Haptic Only Section
-                VStack(spacing: 8) {
-                    Toggle(isOn: $viewModel.hapticOnly) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Silent Mode")
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(AppColors.text)
-                            Text("Gentle vibrations only")
-                                .font(.system(size: 10))
-                                .foregroundColor(AppColors.textMuted)
-                        }
-                    }
-                    .tint(AppColors.accent)
-                    .onChange(of: viewModel.hapticOnly) { _, _ in
-                        WKInterfaceDevice.current().play(.click)
-                    }
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 8)
